@@ -1,7 +1,5 @@
 "use strict";
 
-import ctx from "./ctx";
-
 const reelItem = (type, itemNo, img, x, y, winAmount) => {
   return {
     type,
