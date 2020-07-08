@@ -172,7 +172,7 @@ const init = () => {
     if (canSpin) {
       credits.useCredit();
       credits.render();
-
+      winningRows = [];
       disableNudges();
       disableSpin();
 
@@ -422,6 +422,8 @@ const checkWin = () => {
       }
     }
   }
+
+  console.log("WININIG", winningRows);
 
   if (currentWinAmount) return currentWinAmount;
   return false;
@@ -678,12 +680,16 @@ const gameStates = {
     if (currentTime - now > 50) {
       now = currentTime;
       this.currentWinDisplay += 1;
-      win.currentWin = this.currentWinDisplay;
+      win.currentWin = this.winAmount;
       win.render();
 
       if (this.currentWinDisplay - this.oldWinDisplay === this.winAmount) {
         // Finished looping
+        credits.addCredit(this.winAmount);
+        credits.render();
         this.oldWinDisplay = this.currentWinDisplay;
+        win.reset();
+        win.render();
         cancelAnimationFrame(gameLoop);
         enableSpin();
         winContainer.classList.remove("active");
