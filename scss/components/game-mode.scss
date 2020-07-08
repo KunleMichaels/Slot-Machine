@@ -1,0 +1,33 @@
+#gameModeContainer {
+  text-align: center;
+  border: $base-border;
+  border-color: $silver;
+  border-radius: $base-border-radius;
+  padding: 10px;
+  margin: 15px;
+  color: $silver;
+
+  .hidden {
+    display: none;
+  }
+
+  select {
+    margin-top: 10px;
+    line-height: 40px;
+    border-radius: 4px;
+    font-size: 24px;
+    background-size: auto 62px;
+    color: $silver;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background-position: 0px -1px;
+    text-shadow: #000 0px 0px 4px;
+    background-image: -moz-linear-gradient(#81f06d, #55a647);
+    background-image: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      from(#81f06d),
+      to(#55a647)
+    );
+  }
+}

@@ -242,6 +242,28 @@ body {
     box-shadow: 0px 0px 8px 2px #edb724; }
   100% { } }
 
+#gameModeContainer {
+  text-align: center;
+  border: 1px solid;
+  border-color: silver;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 15px;
+  color: silver; }
+  #gameModeContainer .hidden {
+    display: none; }
+  #gameModeContainer select {
+    line-height: 40px;
+    font-size: 20px;
+    border-radius: 10px;
+    background-size: auto 62px;
+    color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background-position: 0px -1px;
+    text-shadow: #000 0px 0px 4px;
+    background-image: -moz-linear-gradient(#77e0fb, #3f93ac);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#77e0fb), to(#3f93ac)); }
+
 #gameOverSection {
   color: silver;
   font-size: 20px;
