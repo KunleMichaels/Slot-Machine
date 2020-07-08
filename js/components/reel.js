@@ -2,10 +2,31 @@
 
 import reelItem from "./reelItem";
 
+const moveArrayItemToNewIndex = (arr, old_index, new_index) => {
+  while (old_index < 0) {
+    old_index += arr.length;
+  }
+  while (new_index < 0) {
+    new_index += arr.length;
+  }
+  if (new_index >= arr.length) {
+    var k = new_index - arr.length + 1;
+    while (k--) {
+      arr.push(undefined);
+    }
+  }
+  arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+  console.log("NEW ARR", arr);
+};
+
 const reel = (reelNo) => {
   let firstItem;
   let lastItem;
   let nudgeCallTimes;
+
+  const SELECT_GAME_MODE = document.getElementById("game-mode");
+  const SELECT_ITEM_SELECTOR = document.getElementById("item-selector");
+  const SELECT_ROW_SELECTOR = document.getElementById("row-selector");
 
   return {
     noOfItems: NO_ITEMS,
@@ -112,6 +133,24 @@ const reel = (reelNo) => {
       this.shift();
       // Reduce reel runtime
       this.runTime--;
+      if (SELECT_GAME_MODE.value === "fixed" && this.runTime === 0) {
+        let prevIndex = this.reelItems.findIndex(
+          (item) =>
+            parseInt(item.itemNo) === parseInt(SELECT_ITEM_SELECTOR.value)
+        );
+        const mapRowToString = {
+          top: 2,
+          middle: 1,
+          bottom: 0,
+        };
+        let nextIndex = mapRowToString[SELECT_ROW_SELECTOR.value];
+        if (prevIndex !== nextIndex) {
+          moveArrayItemToNewIndex(this.reelItems, prevIndex, nextIndex);
+          this.reelItems.forEach((reelItem) => {
+            reelItem.render();
+          });
+        }
+      }
     },
     render: function () {
       this.reelItems.forEach((reelItem) => {

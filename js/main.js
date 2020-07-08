@@ -15,6 +15,8 @@ const viewport = Viewport();
 const winContainer = document.getElementById("win");
 const nudgesContainer = document.getElementById("nudges");
 let playSection = document.getElementById("playSection");
+const select_gameMode = document.getElementById("game-mode");
+const div_fixedModeOptions = document.getElementById("fixed-mode-options");
 
 let viewportContainer;
 let nudgeButtonContainer;
@@ -190,6 +192,13 @@ const init = () => {
       gameStates.currentState();
     }
   });
+  select_gameMode.addEventListener("change", function (element) {
+    if (this.value === "fixed") {
+      div_fixedModeOptions.classList.remove("hidden");
+    } else if (this.value === "random") {
+      div_fixedModeOptions.classList.add("hidden");
+    }
+  });
 };
 
 const renderNudgeButtonContainer = () => {
@@ -310,7 +319,7 @@ const checkWin = () => {
 
     spinResult.push(reelResult);
   });
-
+  console.log("SPINRESULT", spinResult);
   let result = getAllRowResults(spinResult);
   let currentWinAmount = 0;
 
@@ -422,8 +431,6 @@ const checkWin = () => {
       }
     }
   }
-
-  console.log("WININIG", winningRows);
 
   if (currentWinAmount) return currentWinAmount;
   return false;
