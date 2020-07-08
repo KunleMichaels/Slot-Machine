@@ -180,7 +180,7 @@ body {
   right: 0; }
 
 .win-indicator:after {
-  content: 'WIN';
+  content: "WIN";
   position: absolute;
   top: 0;
   left: 0;
@@ -207,6 +207,30 @@ body {
   opacity: 0.5; }
 
 .win-indicator-centre-line.active {
+  animation: win-indicator-flash 0.5s infinite; }
+
+.win-indicator-top-line {
+  position: absolute;
+  top: 25%;
+  height: 0px;
+  margin-top: -1px;
+  border-top: 1px solid;
+  border-color: silver;
+  opacity: 0.5; }
+
+.win-indicator-top-line.active {
+  animation: win-indicator-flash 0.5s infinite; }
+
+.win-indicator-bottom-line {
+  position: absolute;
+  top: 80%;
+  height: 0px;
+  margin-top: -1px;
+  border-top: 1px solid;
+  border-color: silver;
+  opacity: 0.5; }
+
+.win-indicator-bottom-line.active {
   animation: win-indicator-flash 0.5s infinite; }
 
 @keyframes win-indicator-flash {

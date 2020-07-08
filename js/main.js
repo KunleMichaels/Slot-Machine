@@ -11,7 +11,7 @@ import "../scss/app.scss";
 
 // creates the canvas which we need to draw upon and assigns to a viewport variable
 const viewport = Viewport();
-
+// const spinButton = document.getElementById('spinButton');
 const winContainer = document.getElementById("win");
 const nudgesContainer = document.getElementById("nudges");
 let playSection = document.getElementById("playSection");
@@ -21,7 +21,9 @@ let nudgeButtonContainer;
 let holdButtonContainer;
 let winIndicatorLeft;
 let winIndicatorRight;
+let winIndicatorTopLine;
 let winIndicatorCentreLine;
+let winIndicatorBottomLine;
 let spinButton;
 let reels;
 let nudges;
@@ -31,6 +33,7 @@ let nudgeButtonList;
 let holdButtonList;
 let credits;
 let win;
+let winningRows = [];
 let gameLoop;
 let nudgeChance = 2; // Chance of getting nudges after spin (1 in nudgeChance)
 let holdChance = 2; // Chance of getting holds after spin (1 in holdChance)
@@ -41,11 +44,8 @@ let now; // Current time to compare against
 let reelsRunning = []; // Keeps track of any reels with runtime left on them to estblish whether to reset/stop spin etc.
 let spinType = "spin"; // Keeps track of whether last spin was regular spin or nudge
 
-// Initiate Building our game
-
 const init = () => {
-  // create a container for the view port and append it to the playSection
-  renderViewPortContainer();
+  renderViewportContainer();
 
   // Render viewport
   viewport.render();
@@ -88,9 +88,8 @@ const init = () => {
     viewportContainer.appendChild(reelContainer);
   });
 
-  //todo logic for HOLD and NUDGE
-
   renderWinIndicators();
+
   renderNudgeButtonContainer();
 
   // Set up nudge buttons
@@ -177,7 +176,7 @@ const init = () => {
       disableNudges();
       disableSpin();
 
-      //   Disable hold buttons that aren't held
+      // Disable hold buttons that aren't held
       for (let i = 0; i < reels.reelList.length; i++) {
         if (!reels.reelList[i].isHeld) {
           reels.reelList[i].canHold = false;
@@ -213,7 +212,8 @@ const renderSpinButton = () => {
   playSection.appendChild(spinButton);
 };
 
-const renderViewPortContainer = () => {
+const renderViewportContainer = () => {
+  // Render viewport container
   viewportContainer = document.createElement("div");
   viewportContainer.id = "viewportContainer";
   viewportContainer.style.paddingLeft = VIEWPORT_CONTAINER_PADDING_X + "px";
@@ -232,6 +232,7 @@ const renderWinIndicators = () => {
   winIndicatorRight = document.createElement("span");
   winIndicatorRight.classList.add("win-indicator", "right");
   viewportContainer.appendChild(winIndicatorRight);
+
   // Centre line
   winIndicatorCentreLine = document.createElement("div");
   winIndicatorCentreLine.classList.add("win-indicator-centre-line");
@@ -245,6 +246,34 @@ const renderWinIndicators = () => {
     "px";
 
   viewportContainer.appendChild(winIndicatorCentreLine);
+
+  // Top line
+  winIndicatorTopLine = document.createElement("div");
+  winIndicatorTopLine.classList.add("win-indicator-top-line");
+
+  winIndicatorTopLine.style.left = winIndicatorLeft.offsetWidth + "px";
+
+  winIndicatorTopLine.style.width =
+    viewportContainer.offsetWidth -
+    winIndicatorLeft.offsetWidth -
+    winIndicatorRight.offsetWidth +
+    "px";
+
+  viewportContainer.appendChild(winIndicatorTopLine);
+
+  // Bottom line
+  winIndicatorBottomLine = document.createElement("div");
+  winIndicatorBottomLine.classList.add("win-indicator-bottom-line");
+
+  winIndicatorBottomLine.style.left = winIndicatorLeft.offsetWidth + "px";
+
+  winIndicatorBottomLine.style.width =
+    viewportContainer.offsetWidth -
+    winIndicatorLeft.offsetWidth -
+    winIndicatorRight.offsetWidth +
+    "px";
+
+  viewportContainer.appendChild(winIndicatorBottomLine);
 };
 
 const loop = (currentTime) => {
@@ -261,16 +290,15 @@ const render = () => {
   reels.render();
 
   // Digits
-  //   nudges.render();
+  nudges.render();
   credits.render();
   win.render();
 };
 
+// Calculates win amount, if winning line
 const checkWin = () => {
   let spinResult = []; // Array of reel results after spin (all three visible objects of each reel)
-  let spinResultFiltered = []; // Array of results that don't match first reel
   let reelResult; // Individual reel result, made of three objects (visible)
-  let compareItem; // Middle item on reel one to compare
 
   // Check for win
   reels.reelList.forEach((reel, index) => {
@@ -283,9 +311,138 @@ const checkWin = () => {
     spinResult.push(reelResult);
   });
 
-  console.log("SPIN RESULT", spinResult);
+  let result = getAllRowResults(spinResult);
+  let currentWinAmount = 0;
+
+  // All the possible winning possibilities and its prizes
+  var winningCase = {
+    top: {
+      cherry: {
+        validate: /4{3}/.test(result["top"]),
+        value: 2000,
+      },
+      "7": {
+        validate: /3{3}/.test(result["top"]),
+        value: 150,
+      },
+      cherryOr7: {
+        validate: /[4/3]{3}/.test(result["top"]),
+        value: 75,
+      },
+      "3xBar": {
+        validate: /0{3}/.test(result["top"]),
+        value: 50,
+      },
+      "2xBar": {
+        validate: /2{3}/.test(result["top"]),
+        value: 20,
+      },
+      "1xBar": {
+        validate: /1{3}/.test(result["top"]),
+        value: 10,
+      },
+      anyBar: {
+        validate: /[012]{3}/.test(result["top"]),
+        value: 5,
+      },
+    },
+    middle: {
+      cherry: {
+        validate: /4{3}/.test(result["middle"]),
+        value: 1000,
+      },
+      "7": {
+        validate: /3{3}/.test(result["middle"]),
+        value: 150,
+      },
+      cherryOr7: {
+        validate: /[4/3]{3}/.test(result["middle"]),
+        value: 75,
+      },
+      "3xBar": {
+        validate: /0{3}/.test(result["middle"]),
+        value: 50,
+      },
+      "2xBar": {
+        validate: /2{3}/.test(result["middle"]),
+        value: 20,
+      },
+      "1xBar": {
+        validate: /1{3}/.test(result["middle"]),
+        value: 10,
+      },
+      anyBar: {
+        validate: /[012]{3}/.test(result["middle"]),
+        value: 5,
+      },
+    },
+    bottom: {
+      cherry: {
+        validate: /4{3}/.test(result["bottom"]),
+        value: 4000,
+      },
+      "7": {
+        validate: /3{3}/.test(result["bottom"]),
+        value: 150,
+      },
+      cherryOr7: {
+        validate: /[4/3]{3}/.test(result["bottom"]),
+        value: 75,
+      },
+      "3xBar": {
+        validate: /0{3}/.test(result["bottom"]),
+        value: 50,
+      },
+      "2xBar": {
+        validate: /2{3}/.test(result["bottom"]),
+        value: 20,
+      },
+      "1xBar": {
+        validate: /1{3}/.test(result["bottom"]),
+        value: 10,
+      },
+      anyBar: {
+        validate: /[012]{3}/.test(result["bottom"]),
+        value: 5,
+      },
+    },
+  };
+
+  // Loop through the winning possibilities
+  // case winning draw the line in the winning row
+  // update the view with the prize value
+  for (let row in winningCase) {
+    for (let item in winningCase[row]) {
+      if (winningCase[row][item].validate) {
+        currentWinAmount += winningCase[row][item].value;
+
+        winningRows.push(row);
+        // Break for better performance
+        break;
+      }
+    }
+  }
+
+  if (currentWinAmount) return currentWinAmount;
   return false;
 };
+
+const getAllRowResults = (spinResult) => {
+  let top = "",
+    middle = "",
+    bottom = "";
+  for (let i = 0; i < spinResult.length && spinResult.length === 3; i++) {
+    top += spinResult[i][2].itemNo.toString();
+    middle += spinResult[i][1].itemNo.toString();
+    bottom += spinResult[i][0].itemNo.toString();
+  }
+  return {
+    top,
+    middle,
+    bottom,
+  };
+};
+
 // Randomly assign nudges
 const assignNudges = () => {
   // Randomly assign nudges
@@ -411,6 +568,7 @@ const buttonStyles = (buttonList, addRemove, className) => {
     }
   }
 };
+
 // Game state
 const gameStates = {
   currentState: null,
@@ -506,7 +664,12 @@ const gameStates = {
   },
   // Win animation
   win: function (currentTime) {
-    winIndicatorCentreLine.classList.add("active");
+    if (winningRows.includes("top"))
+      winIndicatorTopLine.classList.add("active");
+    if (winningRows.includes("middle"))
+      winIndicatorCentreLine.classList.add("active");
+    if (winningRows.includes("bottom"))
+      winIndicatorBottomLine.classList.add("active");
     winContainer.classList.add("active");
 
     disableSpin();
@@ -527,7 +690,9 @@ const gameStates = {
         viewportContainer.classList.remove("active");
         winIndicatorLeft.classList.remove("active");
         winIndicatorRight.classList.remove("active");
+        winIndicatorTopLine.classList.remove("active");
         winIndicatorCentreLine.classList.remove("active");
+        winIndicatorBottomLine.classList.remove("active");
 
         // Check credits
         if (credits.creditsRemaining === 0) {
@@ -557,6 +722,36 @@ const gameStates = {
   },
 };
 
+const renderGameOverSection = () => {
+  const gameOverSection = document.createElement("div");
+  gameOverSection.id = "gameOverSection";
+
+  gameOverSection.innerHTML = "<div>";
+  gameOverSection.innerHTML += "<p>Game over</p>";
+  gameOverSection.innerHTML += "<p>You won " + win.currentWin + " credits";
+  gameOverSection.innerHTML += "<p>Press start to play again</p>";
+  gameOverSection.innerHTML += "</div>";
+
+  const startButton = document.createElement("button");
+  startButton.id = "startButton";
+  startButton.classList.add("button");
+  startButton.innerText = "START";
+
+  gameOverSection.appendChild(startButton);
+
+  document.body.appendChild(gameOverSection);
+
+  startButton.addEventListener("click", () => {
+    document.body.removeChild(gameOverSection);
+
+    playSection = document.createElement("div");
+    playSection.id = "playSection";
+    document.body.appendChild(playSection);
+
+    init();
+  });
+};
+
 // Preload images then start game
 var loaded = 0;
 var imageList = [];
@@ -565,7 +760,6 @@ let img;
 ITEM_INFO.forEach((item) => {
   img = new Image();
   img.src = "./img/" + item.imageSrc;
-  console.log("IMAGE", img);
   img.onload = () => {
     loaded++;
     if (loaded === ITEM_INFO.length) init();

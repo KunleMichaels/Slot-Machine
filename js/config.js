@@ -34,7 +34,7 @@ const REEL_WIDTH = ITEM_WIDTH;
 const REELS_TOTAL_WIDTH = NO_REELS * REEL_WIDTH + (NO_REELS - 1) * REEL_SPACING;
 
 // Reel speed
-const REEL_SPEED = 20;
+const REEL_SPEED = 10;
 
 // Reel container padding
 const REEL_CONTAINER_PADDING = 20;
@@ -86,10 +86,10 @@ const ITEM_LIST = [];
 
 const ITEM_INFO = [
   {
-    type: "Cherry",
-    imageSrc: "Cherry.png",
+    type: "3xBar",
+    imageSrc: "3xBAR.png",
     instances: 1,
-    winAmount: 50,
+    winAmount: 100,
   },
   {
     type: "Bar",
@@ -104,16 +104,16 @@ const ITEM_INFO = [
     winAmount: 100,
   },
   {
-    type: "3xBar",
-    imageSrc: "3xBAR.png",
-    instances: 1,
-    winAmount: 100,
-  },
-  {
     type: "Seven",
     imageSrc: "7.png",
     instances: 1,
     winAmount: 500,
+  },
+  {
+    type: "Cherry",
+    imageSrc: "Cherry.png",
+    instances: 1,
+    winAmount: 50,
   },
 ];
 
