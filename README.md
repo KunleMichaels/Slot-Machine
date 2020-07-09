@@ -6,8 +6,9 @@ An extensible slot-machine built with Vanilla javascript and canvas.
 
 ## Requirements to run
 
-A web Browser
-click [here](index.html) to run. If it doesn't work: double click at index.html.
+A web Browser, NodeJs
+run `npm install`
+then `npm run start` the server should start the application on http://localhost:8080
 
 ## Design Pattern
 
