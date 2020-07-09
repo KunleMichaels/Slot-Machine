@@ -9,6 +9,12 @@ const credits = () => {
     container: document.getElementById("credits"),
     addCredit: function (amount) {
       this.creditsRemaining += amount;
+      if (this.creditsRemaining > 5000) {
+        alert(
+          "You must checkout $5,000, your balance would be left in your wallet"
+        );
+        this.creditsRemaining = this.creditsRemaining - 5000;
+      }
     },
     useCredit: function () {
       this.creditsRemaining--;
