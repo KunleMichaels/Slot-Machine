@@ -686,7 +686,8 @@ const gameStates = {
 
     if (currentTime - now > 1) {
       now = currentTime;
-      this.currentWinDisplay += 10;
+      let skip = this.winAmount > 500 ? 10 : 1;
+      this.currentWinDisplay += skip;
       win.currentWin = this.winAmount;
       win.render();
 
