@@ -319,7 +319,6 @@ const checkWin = () => {
 
     spinResult.push(reelResult);
   });
-  console.log("SPINRESULT", spinResult);
   let result = getAllRowResults(spinResult);
   let currentWinAmount = 0;
 
