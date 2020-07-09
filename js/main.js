@@ -16,6 +16,8 @@ const winContainer = document.getElementById("win");
 const nudgesContainer = document.getElementById("nudges");
 let playSection = document.getElementById("playSection");
 const select_gameMode = document.getElementById("game-mode");
+const select_itemSelector = document.getElementById("item-selector");
+const select_rowSelector = document.getElementById("row-selector");
 const div_fixedModeOptions = document.getElementById("fixed-mode-options");
 
 let viewportContainer;
@@ -169,6 +171,7 @@ const init = () => {
   canHold = false;
 
   enableSpin();
+  enableGameMode();
 
   spinButton.addEventListener("click", () => {
     if (canSpin) {
@@ -177,6 +180,7 @@ const init = () => {
       winningRows = [];
       disableNudges();
       disableSpin();
+      disableGameMode();
 
       // Disable hold buttons that aren't held
       for (let i = 0; i < reels.reelList.length; i++) {
@@ -566,6 +570,18 @@ const disableSpin = () => {
   canSpin = false;
 };
 
+const disableGameMode = () => {
+  select_gameMode.disabled = true;
+  select_itemSelector.disabled = true;
+  select_rowSelector.disabled = true;
+};
+
+const enableGameMode = () => {
+  select_gameMode.disabled = false;
+  select_itemSelector.disabled = false;
+  select_rowSelector.disabled = false;
+};
+
 // Add or remove group button styles
 const buttonStyles = (buttonList, addRemove, className) => {
   for (let i = 0; i < buttonList.length; i++) {
@@ -588,6 +604,7 @@ const gameStates = {
   spin: function () {
     this.spinType = "spin";
     disableSpin();
+    disableGameMode();
     moveReels();
     render();
 
@@ -622,6 +639,7 @@ const gameStates = {
       disableNudges();
       disableHolds();
       disableSpin();
+      disableGameMode();
 
       now = currentTime;
       this.winAmount = win;
@@ -644,6 +662,7 @@ const gameStates = {
 
       // Enable spin
       enableSpin();
+      enableGameMode();
 
       // Check credits
       if (credits.creditsRemaining === 0) {
@@ -681,6 +700,7 @@ const gameStates = {
     winContainer.classList.add("active");
 
     disableSpin();
+    disableGameMode();
     disableHolds();
 
     if (currentTime - now > 1) {
@@ -699,6 +719,7 @@ const gameStates = {
         win.render();
         cancelAnimationFrame(gameLoop);
         enableSpin();
+        enableGameMode();
         winContainer.classList.remove("active");
         viewportContainer.classList.remove("active");
         winIndicatorLeft.classList.remove("active");
