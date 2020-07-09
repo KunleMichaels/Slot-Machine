@@ -684,13 +684,13 @@ const gameStates = {
     disableSpin();
     disableHolds();
 
-    if (currentTime - now > 50) {
+    if (currentTime - now > 1) {
       now = currentTime;
-      this.currentWinDisplay += 1;
+      this.currentWinDisplay += 10;
       win.currentWin = this.winAmount;
       win.render();
 
-      if (this.currentWinDisplay - this.oldWinDisplay === this.winAmount) {
+      if (this.currentWinDisplay - this.oldWinDisplay >= this.winAmount) {
         // Finished looping
         credits.addCredit(this.winAmount);
         credits.render();

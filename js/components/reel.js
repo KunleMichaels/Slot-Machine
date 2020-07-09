@@ -146,9 +146,7 @@ const reel = (reelNo) => {
         let nextIndex = mapRowToString[SELECT_ROW_SELECTOR.value];
         if (prevIndex !== nextIndex) {
           moveArrayItemToNewIndex(this.reelItems, prevIndex, nextIndex);
-          this.reelItems.forEach((reelItem) => {
-            reelItem.render();
-          });
+          this.resetCoords();
         }
       }
     },

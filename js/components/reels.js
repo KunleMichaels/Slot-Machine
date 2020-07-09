@@ -29,7 +29,6 @@ const reels = () => {
       this.reelList.forEach((reel) => {
         reel.render();
       });
-      console.log("CALLED REELS", this.reelList);
     },
   };
 };
